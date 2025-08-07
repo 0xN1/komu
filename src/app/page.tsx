@@ -1,32 +1,37 @@
 import Link from "next/link";
 
+const HomeLinks = [
+  {
+    label: "about",
+    url: "/about",
+  },
+  {
+    label: "resources",
+    url: "/",
+  },
+  {
+    label: "sessions",
+    url: "/sessions",
+  },
+];
+
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 gap-16 sm:p-20">
-      <header className="w-full flex justify-between items-center p-4">
-        <span className="font-medium tracking-tighter">KOMU</span>
-        <span className="uppercase">
-          {new Date().toLocaleDateString("en-MY", {
-            month: "short",
-            day: "2-digit",
-            year: "2-digit",
-          })}
-        </span>
-      </header>
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <div className="main-container flex flex-col gap-4">
-          <Link
-            href="/komu"
-            className="px-6 py-4 outline-1 outline-orange-600 bg-[#ff8600] rounded-full text-black minibounce"
-          >
-            KOMU by N1-LAB
-          </Link>
+    <>
+      <main className="flex flex-col w-full min-h-[60dvh] max-h-[60dvh] gap-[32px] row-start-2 justify-between px-4">
+        <div className="flex flex-col gap-4 h-full items-end">
+          <div className="px-6 py-4 bg-primary rounded-full text-background">
+            A COMMUNITY INITIATIVE
+          </div>
+        </div>
+        <div className="h-full gap-2 w-max text-5xl flex flex-col uppercase *:hover:underline *:decoration-primary">
+          {HomeLinks.map((link) => (
+            <Link key={link.label} href={link.url}>
+              {link.label}
+            </Link>
+          ))}
         </div>
       </main>
-      <footer className="w-full flex justify-between items-center p-4">
-        <span>N1-LAB</span>
-        <span>KOMU</span>
-      </footer>
-    </div>
+    </>
   );
 }

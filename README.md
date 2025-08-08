@@ -1,36 +1,151 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# KOMU
+
+**KOMU** (from "komuniti") is a community initiative designed for everyone to learn and share together. This web application serves as a platform for sharing resources, past sessions, and community knowledge.
+
+## Features
+
+### 🏠 Home Page
+
+- Clean, minimalist interface with navigation to main sections
+- Community-focused design with "A COMMUNITY INITIATIVE" branding
+- Direct links to About, Resources, and Sessions
+
+### 📚 Resources
+
+- **Tag-based filtering**: Browse resources by categories like design tools, AI, productivity, music, etc.
+- **Daily shuffled display**: Resources are shuffled daily to provide fresh discovery
+- **Comprehensive collection**: Curated links to tools, websites, and resources shared during community sessions
+- **Categories include**: Gen AI tools, design tools, audio tools, productivity apps, development resources, music, and more
+
+### 📅 Sessions
+
+- **Past sessions archive**: View all previous community sessions with dates
+- **Session details**: Each session has its own page with detailed resources and topics
+- **Chronological organization**: Sessions are organized by date for easy browsing
+
+### ℹ️ About
+
+- Information about the KOMU community initiative
+- Explains the purpose and mission of the platform
+
+## Tech Stack
+
+- **Framework**: [Next.js 15](https://nextjs.org/) with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **Package Manager**: Bun
+- **Deployment**: Optimized for Vercel
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+ or Bun
+- Git
+
+### Installation
+
+1. Clone the repository:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd komu
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+bun install
+# or
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Run the development server:
 
-## Learn More
+```bash
+bun dev
+# or
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/                    # Next.js App Router pages
+│   ├── about/             # About page
+│   ├── resources/         # Resources page with filtering
+│   ├── sessions/          # Sessions listing and detail pages
+│   └── layout.tsx         # Root layout
+├── components/            # Reusable components
+│   ├── header.tsx         # Site header
+│   ├── footer.tsx         # Site footer
+│   └── icons/            # Icon components
+└── lib/
+    ├── data/
+    │   └── sessions.ts    # Session and resource data
+    └── types/
+        └── session-type.d.ts  # TypeScript type definitions
+```
 
-## Deploy on Vercel
+## Data Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The application uses a structured data format for sessions and resources:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```typescript
+interface Session {
+  id: number;
+  title: string;
+  description: string;
+  topics: string[];
+  date: Date;
+  resources: Resource[];
+}
+
+interface Resource {
+  id: number;
+  title: string;
+  description: string;
+  uri: string;
+  tags: string[];
+  type: "link" | "image";
+}
+```
+
+## Available Scripts
+
+- `bun dev` - Start development server
+- `bun build` - Build for production
+- `bun start` - Start production server
+- `bun lint` - Run ESLint
+
+## Contributing
+
+This is a community initiative. To contribute:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## Community Sessions
+
+The platform currently features several "borbor" sessions covering topics like:
+
+- Design tools and AI tools
+- References and inspiration
+- Self-hosting and productivity tools
+- Animation libraries for web/mobile
+- Creative commons and web development
+
+Each session includes curated resources with tags for easy discovery and filtering.
+
+## License
+
+This project is part of the KOMU community initiative. Please respect the community guidelines when contributing.
+
+---
+
+**Built with ❤️ for the community**

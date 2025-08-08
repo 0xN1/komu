@@ -22,14 +22,14 @@ const AboutPage = () => {
           together.
         </p>
       </div>
-      <ul className="list-inside list-decimal">
+      {/* <ul className="list-inside list-decimal">
         <li className="hover:underline">
           <Link href="/resources">resources</Link>
         </li>
         <li className="hover:underline">
           <Link href="/sessions">past sessions</Link>
         </li>
-      </ul>
+      </ul> */}
     </div>
   );
 };

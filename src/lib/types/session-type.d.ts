@@ -11,8 +11,9 @@ type Resources = {
   id: number;
   title: string;
   description: string;
-  url: string;
-  type: string;
+  uri: string;
+  tags: string[];
+  type: "link" | "video" | "image" | "audio" | "document";
 };
 
 export type { Session, Resources };

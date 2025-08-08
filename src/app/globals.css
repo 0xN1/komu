@@ -28,6 +28,12 @@
   }
 }
 
+@utility scrollbar-hidden {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

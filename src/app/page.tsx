@@ -7,7 +7,7 @@ const HomeLinks = [
   },
   {
     label: "resources",
-    url: "/",
+    url: "/resources",
   },
   {
     label: "sessions",

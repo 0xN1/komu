@@ -11,28 +11,32 @@ const SessionsPage = () => {
         back to home
       </Link>
       <h1 className="text-4xl uppercase opacity-80">PAST SESSIONS</h1>
-      <div className="flex flex-col gap-4 mt-4">
+      <div className="flex flex-col gap-4 mt-2">
         <div className="flex flex-col">
-          <h2 className="text-2xl uppercase flex flex-col">
+          <div className="text-2xl uppercase flex flex-col h-[42dvh] max-h-[42dvh] gap-2 overflow-y-auto scrollbar-hidden">
             {sessions.map((session) => (
               <Link
                 href={`/sessions/${slugify(session.title)}`}
                 key={session.id}
-                className="uppercase"
+                className="uppercase flex flex-row gap-2 items-center"
               >
-                <span className="hover:underline peer hover:text-primary">
+                <span
+                  className="
+                text-xl uppercase cursor-pointer hover:underline hover:decoration-primary border-2 border-primary rounded-full px-4 py-2
+                hover:bg-primary hover:text-white w-max"
+                >
                   {session.title}
                 </span>
-                <span className="text-xs align-super ml-2 peer-hover:text-zinc-200">
-                  {session.date.toLocaleDateString("en-US", {
+                <span className="text-xs peer-hover:text-zinc-200">
+                  {session.date.toLocaleDateString("en-MY", {
                     month: "short",
-                    day: "numeric",
-                    year: "numeric",
+                    day: "2-digit",
+                    year: "2-digit",
                   })}
                 </span>
               </Link>
             ))}
-          </h2>
+          </div>
         </div>
       </div>
     </div>

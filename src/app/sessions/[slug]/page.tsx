@@ -2,11 +2,15 @@ import sessions from "@/lib/data/sessions";
 import Link from "next/link";
 import Image from "next/image";
 
-const SessionPage = async ({ params }: { params: { slug: string } }) => {
+const SessionPage = async ({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) => {
   const { slug: sessionSlug } = await params;
 
   const session = sessions.find(
-    (session) => session.title.toLowerCase() === deSlugify(sessionSlug[0])
+    (session) => session.title.toLowerCase() === deSlugify(sessionSlug)
   );
 
   if (!session) {

@@ -1,5 +1,8 @@
+'use client'
+
 import Link from "next/link";
-import N1LabLogo from "../../components/icons/n1-lab";
+import {motion as m} from "motion/react"
+import { fadeIn } from "@/lib/anim";
 
 const AboutPage = () => {
   return (
@@ -10,26 +13,21 @@ const AboutPage = () => {
           href="/"
           className="text-xs uppercase text-secondary/80 hover:underline hover:text-primary ml-[2px]"
         >
-          back to home
+          <m.span {...fadeIn} transition={{ delay: 0.1, duration: 0.5 }}>
+            back to home
+          </m.span>
         </Link>
-        <h1 className="text-4xl -ml-[1px]">KOMU</h1>
-        <p>
+        <m.h1 {...fadeIn} transition={{ delay: 0.1, duration: 0.5 }} className="text-4xl -ml-[1px]">KOMU</m.h1>
+        <m.span {...fadeIn} transition={{ delay: 0.2, duration: 0.5 }}>
           <span className="text-primary">KOMU</span>{" "}
           <span className="text-zinc-400 align-super text-xs">
             (from &quot;komuniti&quot;)
           </span>{" "}
           is a community initiative designed for everyone to learn and share
           together.
-        </p>
+        </m.span>
       </div>
-      {/* <ul className="list-inside list-decimal">
-        <li className="hover:underline">
-          <Link href="/resources">resources</Link>
-        </li>
-        <li className="hover:underline">
-          <Link href="/sessions">past sessions</Link>
-        </li>
-      </ul> */}
+      
     </div>
   );
 };

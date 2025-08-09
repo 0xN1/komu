@@ -3,6 +3,8 @@
 import sessions from "@/lib/data/sessions";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
+import { motion as m} from "motion/react"
+import { fadeIn, tagsStaggerAnimation, staggerAnimation } from "@/lib/anim";
 
 // Simple but effective shuffle function with seed
 const shuffleArray = <T,>(array: T[], seed: number): T[] => {
@@ -46,20 +48,20 @@ const ResourcesPage = () => {
   const [filteredResources, setFilteredResources] = useState<
     (typeof sessions)[0]["resources"]
   >([]);
-  const [shuffledSessions, setShuffledSessions] = useState(sessions);
+  const [shuffledTags, setShuffledTags] = useState<string[]>([]);
 
-  // Shuffle sessions on mount with a stable seed
-  useEffect(() => {
-    const today = new Date();
-    const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
-    setShuffledSessions(shuffleArray(sessions, seed));
-  }, []);
-
-  // get all unique tags from shuffled sessions
-  const tags = shuffledSessions
+  // Get all unique tags from sessions
+  const tags = sessions
     .flatMap((session) => session.resources.map((resource) => resource.tags))
     .flat();
   const uniqueTags = [...new Set(tags)];
+
+  // Shuffle tags on mount with a stable seed
+  useEffect(() => {
+    const today = new Date();
+    const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+    setShuffledTags(shuffleArray(uniqueTags, seed));
+  }, []);
 
   const handleTagClick = (tag: string) => {
     setSelectedTag(tag);
@@ -68,14 +70,14 @@ const ResourcesPage = () => {
   useEffect(() => {
     if (selectedTag) {
       setFilteredResources(
-        shuffledSessions.flatMap((session) =>
+        sessions.flatMap((session) =>
           session.resources.filter((resource) =>
             resource.tags.includes(selectedTag)
           )
         )
       );
     }
-  }, [selectedTag, shuffledSessions]);
+  }, [selectedTag]);
 
   // Create refs for each scrollable container
   const scrollRef1 = useHorizontalScroll();
@@ -83,77 +85,99 @@ const ResourcesPage = () => {
   const scrollRef3 = useHorizontalScroll();
 
   return (
-    <div className="w-full flex flex-col gap-4 p-4">
-      <Link
-        href="/"
-        className="text-xs uppercase text-secondary/80 -mb-2 hover:underline hover:text-primary ml-[2px]"
-      >
-        back to home
-      </Link>
-      <h1 className="text-4xl uppercase">RESOURCES</h1>
-      <div className="flex flex-col gap-2 w-full">
+    <div className="w-full flex flex-col gap-4 p-4 relative -mt-12">
+      <m.span {...fadeIn} transition={{ delay: 0.2, duration: 0.5 }}>
+        <Link
+          href="/"
+          className="text-xs uppercase text-secondary/80 -mb-2 hover:underline hover:text-primary ml-[2px]"
+        >
+          back to home
+        </Link>
+      </m.span>
+      <m.h1 {...fadeIn} transition={{ delay: 0.2, duration: 0.5 }} className="text-4xl uppercase">RESOURCES</m.h1>
+      <div className="flex flex-col gap-2 w-full relative">
+        <div className="flex flex-col gap-2 w-screen absolute inset-0 -ml-12 sm:-ml-24 pointer-events-none">
         <div 
           ref={scrollRef1}
-          className="flex flex-row gap-2 overflow-x-auto w-full max-w-[80dvw] flex-nowrap scrollbar-hidden -ml-1"
+          className="flex flex-row gap-2 overflow-x-auto w-full max-w-screen flex-nowrap scrollbar-hidden pl-8 pointer-events-auto"
         >
-          {uniqueTags.slice(0, Math.ceil(uniqueTags.length / 3)).map((tag) => (
-            <div key={tag} className="flex-shrink-0">
-              <button
-                className="text-xl uppercase cursor-pointer hover:underline hover:decoration-primary border-2 border-primary rounded-full px-4 py-2
-                hover:bg-primary hover:text-white
-                "
+          {shuffledTags.slice(0, Math.ceil(shuffledTags.length / 3)).map((tag, index) => (
+            <m.div key={tag} className="flex-shrink-0">
+              <m.button 
+                variants={tagsStaggerAnimation} 
+                custom={index} 
+                initial="hidden" 
+                animate="visible"
+                className={`text-xl uppercase cursor-pointer hover:underline hover:decoration-primary border-2 border-primary rounded-full px-4 py-2 ${
+                  selectedTag === tag 
+                    ? 'bg-primary text-secondary' 
+                    : 'hover:bg-primary hover:text-white'
+                }`}
                 onClick={() => handleTagClick(tag)}
               >
                 {tag}
-              </button>
-            </div>
+              </m.button>
+            </m.div>
           ))}
         </div>
         <div 
           ref={scrollRef2}
-          className="flex flex-row gap-2 overflow-x-auto w-full max-w-[80dvw] flex-nowrap scrollbar-hidden -ml-1"
+          className="flex flex-row gap-2 overflow-x-auto w-full max-w-screen flex-nowrap scrollbar-hidden pl-4 pointer-events-auto"
         >
-          {uniqueTags
+          {shuffledTags
             .slice(
-              Math.ceil(uniqueTags.length / 3),
-              Math.ceil(uniqueTags.length / 3) * 2
+              Math.ceil(shuffledTags.length / 3),
+              Math.ceil(shuffledTags.length / 3) * 2
             )
-            .map((tag) => (
-              <div key={tag} className="flex-shrink-0">
-                <button
-                  className="text-xl uppercase cursor-pointer hover:underline hover:decoration-primary border-2 border-primary rounded-full px-4 py-2
-                hover:bg-primary hover:text-white
-                "
+            .map((tag, index) => (
+              <m.div key={tag} className="flex-shrink-0">
+                <m.button 
+                  variants={tagsStaggerAnimation} 
+                  custom={index + Math.ceil(shuffledTags.length / 3)} 
+                  initial="hidden" 
+                  animate="visible"
+                  className={`text-xl uppercase cursor-pointer hover:underline hover:decoration-primary border-2 border-primary rounded-full px-4 py-2 ${
+                    selectedTag === tag 
+                      ? 'bg-primary text-secondary' 
+                      : 'hover:bg-primary hover:text-white'
+                  }`}
                   onClick={() => handleTagClick(tag)}
                 >
                   {tag}
-                </button>
-              </div>
+                </m.button>
+              </m.div>
             ))}
         </div>
         <div 
           ref={scrollRef3}
-          className="flex flex-row gap-2 overflow-x-auto w-full max-w-[80dvw] flex-nowrap scrollbar-hidden -ml-1"
+          className="flex flex-row gap-2 overflow-x-auto w-full max-w-screen flex-nowrap pl-8 scrollbar-hidden pointer-events-auto"
         >
-          {uniqueTags
-            .slice(Math.ceil(uniqueTags.length / 3) * 2, uniqueTags.length)
-            .map((tag) => (
-              <div key={tag} className="flex-shrink-0">
-                <button
-                  className="text-xl uppercase cursor-pointer hover:underline hover:decoration-primary border-2 border-primary rounded-full px-4 py-2
-                hover:bg-primary hover:text-white
-                "
+          {shuffledTags
+            .slice(Math.ceil(shuffledTags.length / 3) * 2, shuffledTags.length)
+            .map((tag, index) => (
+              <m.div key={tag} className="flex-shrink-0">
+                <m.button 
+                  variants={tagsStaggerAnimation} 
+                  custom={index + Math.ceil(shuffledTags.length / 3) * 2} 
+                  initial="hidden" 
+                  animate="visible"
+                  className={`text-xl uppercase cursor-pointer hover:underline hover:decoration-primary border-2 border-primary rounded-full px-4 py-2 ${
+                    selectedTag === tag 
+                      ? 'bg-primary text-secondary' 
+                      : 'hover:bg-primary hover:text-white'
+                  }`}
                   onClick={() => handleTagClick(tag)}
                 >
                   {tag}
-                </button>
-              </div>
+                </m.button>
+              </m.div>
             ))}
         </div>
-        <div className="flex flex-col gap-2 mt-4 h-[20dvh] max-h-[20dvh] overflow-y-auto">
+        </div>
+        <div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:space-y-4 gap-2 h-[24dvh] max-h-[24dvh] mt-48 sm:mt-60 overflow-y-auto scrollbar-hidden">
           {filteredResources.length > 0 ? (
             filteredResources.map((resource, index) => (
-              <div key={resource.id}>
+              <m.div key={resource.id} variants={staggerAnimation} custom={index} initial="hidden" animate="visible">
                 <Link
                   href={resource.uri}
                   target="_blank"
@@ -163,10 +187,10 @@ const ResourcesPage = () => {
                   {resource.title}
                 </Link>
                 <p className="text-lg">{resource.description}</p>
-              </div>
+              </m.div>
             ))
           ) : (
-            <p className="text-lg">click any tag above</p>
+            <m.p {...fadeIn} transition={{ delay: 1.2, duration: 0.5 }} className="text-lg">click any tag above</m.p>
           )}
         </div>
       </div>

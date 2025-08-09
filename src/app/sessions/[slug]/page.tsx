@@ -1,13 +1,19 @@
+'use client'
+
 import sessions from "@/lib/data/sessions";
 import Link from "next/link";
 import Image from "next/image";
+import { motion as m } from "motion/react";
+import { fadeIn, staggerAnimation  } from "@/lib/anim";
+import { use } from "react";
 
-const SessionPage = async ({
+
+const SessionPage = ({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) => {
-  const { slug: sessionSlug } = await params;
+  const { slug: sessionSlug } = use(params);
 
   const session = sessions.find(
     (session) => session.title.toLowerCase() === deSlugify(sessionSlug)
@@ -19,17 +25,19 @@ const SessionPage = async ({
 
   return (
     <div className="w-full flex flex-col gap-2 p-4 relative">
+      <m.span {...fadeIn} transition={{ delay: 0.1, duration: 0.5 }}>
       <Link
         href="/sessions"
         className="text-xs uppercase text-secondary/80 hover:underline hover:text-primary ml-[2px]"
       >
-        back to sessions
-      </Link>
-      <h1 className="text-4xl uppercase">{session?.title}</h1>
-      <p className="text-sm">{session?.description}</p>
+          back to sessions
+        </Link>
+      </m.span>
+      <m.h1 {...fadeIn} transition={{ delay: 0.15, duration: 0.5 }} className="text-4xl uppercase">{session?.title}</m.h1>
+      <m.p {...fadeIn} transition={{ delay: 0.2, duration: 0.5 }} className="text-sm">{session?.description}</m.p>
       <div className="flex flex-col gap-2 mt-4 h-[42dvh] max-h-[42dvh] overflow-y-auto text-2xl scrollbar-hidden">
-        {session.resources.map((resource) => (
-          <div key={resource.id}>
+        {session.resources.map((resource, index) => (
+          <m.div key={resource.id} variants={staggerAnimation} custom={index} initial="hidden" animate="visible">
             {resource.type === "link" && (
               <Link
                 href={resource.uri}
@@ -65,7 +73,7 @@ const SessionPage = async ({
               </div>
             )}
             <p className="text-sm">{resource.description}</p>
-          </div>
+          </m.div>
         ))}
       </div>
     </div>

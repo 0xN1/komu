@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import {motion as m} from "motion/react"
+import { fadeIn } from "@/lib/anim";
 
 const Header = () => {
   const [currentDate, setCurrentDate] = useState("");
@@ -29,15 +31,18 @@ const Header = () => {
 
   return (
     <header className="w-full flex justify-between items-center p-4">
+       <m.span {...fadeIn}>
       <Link
         href="/"
         className="font-medium tracking-tighter hover:text-primary hover:underline"
       >
-        KOMU
+          KOMU
+        
       </Link>
-      <span className="uppercase">
+      </m.span>
+      <m.span {...fadeIn} transition={{ delay: 0.1, duration: 0.5 }} className="uppercase">
         {currentDate}
-      </span>
+      </m.span>
     </header>
   );
 };

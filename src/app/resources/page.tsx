@@ -2,7 +2,7 @@
 
 import sessions from "@/lib/data/sessions";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 // Simple but effective shuffle function with seed
 const shuffleArray = <T,>(array: T[], seed: number): T[] => {
@@ -16,6 +16,29 @@ const shuffleArray = <T,>(array: T[], seed: number): T[] => {
   }
   
   return shuffled;
+};
+
+// Custom hook for horizontal scrolling with mouse wheel
+const useHorizontalScroll = () => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const element = scrollRef.current;
+    if (!element) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      element.scrollLeft += e.deltaY;
+    };
+
+    element.addEventListener('wheel', handleWheel, { passive: false });
+    
+    return () => {
+      element.removeEventListener('wheel', handleWheel);
+    };
+  }, []);
+
+  return scrollRef;
 };
 
 const ResourcesPage = () => {
@@ -54,6 +77,11 @@ const ResourcesPage = () => {
     }
   }, [selectedTag, shuffledSessions]);
 
+  // Create refs for each scrollable container
+  const scrollRef1 = useHorizontalScroll();
+  const scrollRef2 = useHorizontalScroll();
+  const scrollRef3 = useHorizontalScroll();
+
   return (
     <div className="w-full flex flex-col gap-4 p-4">
       <Link
@@ -64,7 +92,10 @@ const ResourcesPage = () => {
       </Link>
       <h1 className="text-4xl uppercase">RESOURCES</h1>
       <div className="flex flex-col gap-2 w-full">
-        <div className="flex flex-row gap-2 overflow-x-auto w-full max-w-[80dvw] flex-nowrap scrollbar-hidden -ml-1">
+        <div 
+          ref={scrollRef1}
+          className="flex flex-row gap-2 overflow-x-auto w-full max-w-[80dvw] flex-nowrap scrollbar-hidden -ml-1"
+        >
           {uniqueTags.slice(0, Math.ceil(uniqueTags.length / 3)).map((tag) => (
             <div key={tag} className="flex-shrink-0">
               <button
@@ -78,7 +109,10 @@ const ResourcesPage = () => {
             </div>
           ))}
         </div>
-        <div className="flex flex-row gap-2 overflow-x-auto w-full max-w-[80dvw] flex-nowrap scrollbar-hidden -ml-1">
+        <div 
+          ref={scrollRef2}
+          className="flex flex-row gap-2 overflow-x-auto w-full max-w-[80dvw] flex-nowrap scrollbar-hidden -ml-1"
+        >
           {uniqueTags
             .slice(
               Math.ceil(uniqueTags.length / 3),
@@ -97,7 +131,10 @@ const ResourcesPage = () => {
               </div>
             ))}
         </div>
-        <div className="flex flex-row gap-2 overflow-x-auto w-full max-w-[80dvw] flex-nowrap scrollbar-hidden -ml-1">
+        <div 
+          ref={scrollRef3}
+          className="flex flex-row gap-2 overflow-x-auto w-full max-w-[80dvw] flex-nowrap scrollbar-hidden -ml-1"
+        >
           {uniqueTags
             .slice(Math.ceil(uniqueTags.length / 3) * 2, uniqueTags.length)
             .map((tag) => (

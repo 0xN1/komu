@@ -27,7 +27,7 @@ const SessionPage = async ({
       </Link>
       <h1 className="text-4xl uppercase">{session?.title}</h1>
       <p className="text-sm">{session?.description}</p>
-      <div className="flex flex-col gap-2 mt-4 h-[42dvh] max-h-[42dvh] overflow-y-auto text-2xl">
+      <div className="flex flex-col gap-2 mt-4 h-[42dvh] max-h-[42dvh] overflow-y-auto text-2xl scrollbar-hidden">
         {session.resources.map((resource) => (
           <div key={resource.id}>
             {resource.type === "link" && (

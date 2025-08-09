@@ -14,7 +14,7 @@ const SessionsPage = () => {
       <div className="flex flex-col gap-4 mt-2">
         <div className="flex flex-col">
           <div className="text-2xl uppercase flex flex-col h-[42dvh] max-h-[42dvh] gap-2 overflow-y-auto scrollbar-hidden">
-            {sessions.map((session) => (
+            {sessions.reverse().map((session) => (
               <Link
                 href={`/sessions/${slugify(session.title)}`}
                 key={session.id}

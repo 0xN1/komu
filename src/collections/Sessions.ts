@@ -6,6 +6,12 @@ export const Sessions: CollectionConfig = {
   admin: {
     useAsTitle: "title",
   },
+  access: {
+    read: () => true, // Allow public read access
+    create: ({ req: { user } }) => Boolean(user), // Only authenticated users can create
+    update: ({ req: { user } }) => Boolean(user), // Only authenticated users can update
+    delete: ({ req: { user } }) => Boolean(user), // Only authenticated users can delete
+  },
   fields: [
     {
       name: "title",

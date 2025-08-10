@@ -31,7 +31,7 @@ export default function RootLayout({
       >
         <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen px-6 py-8 gap-16 sm:p-20 text-secondary">
           <Header />
-          {children}
+            {children}
           <Footer />
         </div>
       </body>

@@ -1,10 +1,10 @@
 "use client";
 
-import sessions from "@/lib/data/sessions";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { motion as m} from "motion/react"
 import { fadeIn, tagsStaggerAnimation, staggerAnimation } from "@/lib/anim";
+import { useResourceTags, useResourcesByTag } from "@/lib/hooks/usePayloadData";
 
 // Simple but effective shuffle function with seed
 const shuffleArray = <T,>(array: T[], seed: number): T[] => {
@@ -45,39 +45,24 @@ const useHorizontalScroll = () => {
 
 const ResourcesPage = () => {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const [filteredResources, setFilteredResources] = useState<
-    (typeof sessions)[0]["resources"]
-  >([]);
   const [shuffledTags, setShuffledTags] = useState<string[]>([]);
-
-  // Get all unique tags from sessions
-  const tags = sessions
-    .flatMap((session) => session.resources.map((resource) => resource.tags))
-    .flat();
-  const uniqueTags = [...new Set(tags)];
+  
+  // Use Payload data hooks
+  const { tags: uniqueTags} = useResourceTags();
+  const { filteredResources, loading: resourcesLoading } = useResourcesByTag(selectedTag);
 
   // Shuffle tags on mount with a stable seed
   useEffect(() => {
-    const today = new Date();
-    const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
-    setShuffledTags(shuffleArray(uniqueTags, seed));
-  }, []);
+    if (uniqueTags.length > 0) {
+      const today = new Date();
+      const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+      setShuffledTags(shuffleArray(uniqueTags, seed));
+    }
+  }, [uniqueTags]);
 
   const handleTagClick = (tag: string) => {
     setSelectedTag(tag);
   };
-
-  useEffect(() => {
-    if (selectedTag) {
-      setFilteredResources(
-        sessions.flatMap((session) =>
-          session.resources.filter((resource) =>
-            resource.tags.includes(selectedTag)
-          )
-        )
-      );
-    }
-  }, [selectedTag]);
 
   // Create refs for each scrollable container
   const scrollRef1 = useHorizontalScroll();
@@ -110,7 +95,7 @@ const ResourcesPage = () => {
                 animate="visible"
                 className={`text-xl uppercase cursor-pointer hover:underline hover:decoration-primary border-2 border-primary rounded-full px-4 py-2 ${
                   selectedTag === tag 
-                    ? 'bg-primary text-secondary' 
+                    ? 'bg-primary text-background' 
                     : 'hover:bg-primary hover:text-white'
                 }`}
                 onClick={() => handleTagClick(tag)}
@@ -138,7 +123,7 @@ const ResourcesPage = () => {
                   animate="visible"
                   className={`text-xl uppercase cursor-pointer hover:underline hover:decoration-primary border-2 border-primary rounded-full px-4 py-2 ${
                     selectedTag === tag 
-                      ? 'bg-primary text-secondary' 
+                      ? 'bg-primary text-background' 
                       : 'hover:bg-primary hover:text-white'
                   }`}
                   onClick={() => handleTagClick(tag)}
@@ -163,7 +148,7 @@ const ResourcesPage = () => {
                   animate="visible"
                   className={`text-xl uppercase cursor-pointer hover:underline hover:decoration-primary border-2 border-primary rounded-full px-4 py-2 ${
                     selectedTag === tag 
-                      ? 'bg-primary text-secondary' 
+                      ? 'bg-primary text-background' 
                       : 'hover:bg-primary hover:text-white'
                   }`}
                   onClick={() => handleTagClick(tag)}
@@ -175,22 +160,37 @@ const ResourcesPage = () => {
         </div>
         </div>
         <div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:space-y-4 gap-2 h-[24dvh] max-h-[24dvh] mt-48 sm:mt-60 overflow-y-auto scrollbar-hidden">
-          {filteredResources.length > 0 ? (
+          {resourcesLoading ? (
+            <m.p {...fadeIn} transition={{ delay: 0.5, duration: 0.5 }} className="text-lg">
+            loading resources...
+          </m.p>
+          ) : filteredResources.length > 0 ? (
             filteredResources.map((resource, index) => (
               <m.div key={resource.id} variants={staggerAnimation} custom={index} initial="hidden" animate="visible">
-                <Link
-                  href={resource.uri}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-2xl uppercase underline text-primary"
-                >
-                  {resource.title}
-                </Link>
-                <p className="text-lg">{resource.description}</p>
+                <div className="flex flex-col gap-2">
+                {resource.uri && (
+                  <Link
+                    href={resource.uri}
+                    className="text-2xl uppercase underline text-primary hover:text-primary/80 transition-colors"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {resource.title || 'Untitled'}
+                  </Link>
+                   )}
+                  <p className="text-lg">{resource.description || 'No description available'}</p>
+                 
+                </div>
               </m.div>
             ))
+          ) : selectedTag ? (
+            <m.p {...fadeIn} transition={{ delay: 0.5, duration: 0.5 }} className="text-lg">
+              No resources found for this tag
+            </m.p>
           ) : (
-            <m.p {...fadeIn} transition={{ delay: 1.2, duration: 0.5 }} className="text-lg">click any tag above</m.p>
+            <m.p {...fadeIn} transition={{ delay: 1.2, duration: 0.5 }} className="text-lg">
+              click any tag above
+            </m.p>
           )}
         </div>
       </div>

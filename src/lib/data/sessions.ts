@@ -296,8 +296,8 @@ const sessions: Session[] = [
   {
     id: 5,
     title: "borbor 008",
-    description: "",
-    topics: ["", ""],
+    description: "revolves around personal website, productivity apps",
+    topics: ["personal website", "productivity apps"],
     date: new Date("2025-08-07"),
     resources: [
       {
@@ -435,7 +435,7 @@ const sessions: Session[] = [
         id: 606,
         title: "cursor component",
         description: "code for cursor component (from 0xn1.dev)",
-        uri: "https://0xn1.dev/cursor",
+        uri: "https://gist.github.com/0xN1/9a3bc06925ca1d56561ca2df3a58f332",
         tags: [
           "cursor",
           "component",

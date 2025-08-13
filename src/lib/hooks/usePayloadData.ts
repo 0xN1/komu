@@ -1,6 +1,10 @@
-import { useState, useEffect, useMemo } from 'react';
-import { Session, Resource, Media } from '@/payload-types';
-import { fetchSessions, fetchResources, fetchMedia } from '@/lib/payload-client';
+import { useState, useEffect, useMemo } from "react";
+import { Session, Resource, Media } from "@/payload-types";
+import {
+  fetchSessions,
+  fetchResources,
+  fetchMedia,
+} from "@/lib/payload-client";
 
 export function useSessions() {
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -14,7 +18,7 @@ export function useSessions() {
       const data = await fetchSessions();
       setSessions(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch sessions');
+      setError(err instanceof Error ? err.message : "Failed to fetch sessions");
     } finally {
       setLoading(false);
     }
@@ -39,7 +43,9 @@ export function useResources() {
       const data = await fetchResources();
       setResources(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch resources');
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch resources"
+      );
     } finally {
       setLoading(false);
     }
@@ -64,7 +70,7 @@ export function useMedia() {
       const data = await fetchMedia();
       setMedia(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch media');
+      setError(err instanceof Error ? err.message : "Failed to fetch media");
     } finally {
       setLoading(false);
     }
@@ -80,12 +86,12 @@ export function useMedia() {
 // Helper function to get all unique tags from resources
 export function useResourceTags() {
   const { resources, loading, error } = useResources();
-  
+
   const tags = useMemo(() => {
     return resources
-      .flatMap(resource => resource.tags || [])
-      .filter(tag => tag?.tag)
-      .map(tag => tag.tag!)
+      .flatMap((resource) => resource.tags || [])
+      .filter((tag) => tag?.tag)
+      .map((tag) => tag.tag!)
       .filter((tag, index, array) => array.indexOf(tag) === index);
   }, [resources]);
 
@@ -95,11 +101,11 @@ export function useResourceTags() {
 // Helper function to get resources by tag
 export function useResourcesByTag(selectedTag: string | null) {
   const { resources, loading, error } = useResources();
-  
+
   const filteredResources = useMemo(() => {
-    return selectedTag 
-      ? resources.filter(resource => 
-          resource.tags?.some(tag => tag?.tag === selectedTag)
+    return selectedTag
+      ? resources.filter((resource) =>
+          resource.tags?.some((tag) => tag?.tag === selectedTag)
         )
       : [];
   }, [resources, selectedTag]);
